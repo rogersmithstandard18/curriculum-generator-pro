@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curriculum Generator Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 0 20px;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .step.active .step-number {
+            background: #4CAF50;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .quick-select {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .quick-btn {
+            background: #f0f4f8;
+            border: 2px solid #e2e8f0;
+            border-radius: 25px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .quick-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .quick-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .generate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .output-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .output-section.show {
+            display: block;
+        }
+
+        .curriculum-output {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            margin-top: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .pricing-preview {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .step-indicator {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .step {
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Curriculum Generator Pro</h1>
+            <p>AI-Powered Custom Curriculum Creation in Minutes</p>
+        </div>
+
+        <div class="main-content">
+            <div class="step-indicator">
+                <div class="step active">
+                    <div class="step-number">1</div>
+                    <span>Setup</span>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <span>Generate</span>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <span>Customize</span>
+                </div>
+            </div>
+
+            <form id="curriculumForm">
+                <div class="form-section">
+                    <h3>👨‍🏫 Your Role</h3>
+                    <div class="input-group">
+                        <label>Select your role or enter custom:</label>
+                        <div class="quick-select" id="roleSelect">
+                            <div class="quick-btn" data-value="educator">Educator</div>
+                            <div class="quick-btn" data-value="instructor">Instructor</div>
+                            <div class="quick-btn" data-value="trainer">Corporate Trainer</div>
+                            <div class="quick-btn" data-value="professor">Professor</div>
+                            <div class="quick-btn" data-value="facilitator">Facilitator</div>
+                            <div class="quick-btn" data-value="consultant">Educational Consultant</div>
+                        </div>
+                        <input type="text" id="customRole" placeholder="Or enter your custom role...">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>🎯 Subject Domain</h3>
+                    <div class="input-group">
+                        <label>Choose domain or specify custom:</label>
+                        <div class="quick-select" id="domainSelect">
+                            <div class="quick-btn" data-value="business">Business</div>
+                            <div class="quick-btn" data-value="technology">Technology</div>
+                            <div class="quick-btn" data-value="healthcare">Healthcare</div>
+                            <div class="quick-btn" data-value="education">Education</div>
+                            <div class="quick-btn" data-value="marketing">Marketing</div>
+                            <div class="quick-btn" data-value="science">Science</div>
+                        </div>
+                        <input type="text" id="customDomain" placeholder="Or enter your custom domain...">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>📚 Subject Name</h3>
+                    <div class="input-group">
+                        <label>What specific subject are you teaching?</label>
+                        <input type="text" id="subjectName" placeholder="e.g., Digital Marketing Fundamentals, Python Programming, Project Management..." required>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>👥 Target Audience</h3>
+                    <div class="input-group">
+                        <label>Who are your learners?</label>
+                        <div class="quick-select" id="audienceSelect">
+                            <div class="quick-btn" data-value="beginners">Beginners</div>
+                            <div class="quick-btn" data-value="intermediate">Intermediate</div>
+                            <div class="quick-btn" data-value="professionals">Working Professionals</div>
+                            <div class="quick-btn" data-value="students">College Students</div>
+                            <div class="quick-btn" data-value="highschool">High School</div>
+                            <div class="quick-btn" data-value="executives">Executives</div>
+                        </div>
+                        <input type="text" id="customAudience" placeholder="Or describe your specific audience...">
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>⚙️ Curriculum Options</h3>
+                    <div class="input-group">
+                        <label>Course Duration:</label>
+                        <select id="duration">
+                            <option value="12">12 Weeks (Standard)</option>
+                            <option value="6">6 Weeks (Intensive)</option>
+                            <option value="16">16 Weeks (Extended)</option>
+                            <option value="8">8 Weeks (Bootcamp)</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Session Length:</label>
+                        <select id="sessionLength">
+                            <option value="3-4 hours">3-4 Hours</option>
+                            <option value="2-3 hours">2-3 Hours</option>
+                            <option value="1-2 hours">1-2 Hours</option>
+                            <option value="4-6 hours">4-6 Hours (Full Day)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="generate-btn">🚀 Generate My Curriculum</button>
+            </form>
+
+            <div class="output-section" id="outputSection">
+                <div class="loading" id="loadingDiv">
+                    <div class="spinner"></div>
+                    <h3>Generating your custom curriculum...</h3>
+                    <p>This may take 30-60 seconds</p>
+                </div>
+                
+                <div class="curriculum-output" id="curriculumOutput" style="display: none;">
+                    <h3>📋 Your Generated Curriculum</h3>
+                    <div id="generatedContent"></div>
+                    <div style="margin-top: 30px;">
+                        <button class="generate-btn" onclick="expandWeek()">📖 Expand Week 1 into Daily Sessions</button>
+                        <button class="generate-btn" onclick="generateDaily()" style="margin-left: 10px;">📝 Create Detailed Daily Plan</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pricing-preview">
+                <h3>🔒 Enterprise Security Features</h3>
+                <div class="price">$79/month</div>
+                <p>✅ Advanced content moderation<br>
+                ✅ User authentication & roles<br>
+                ✅ Audit logs & compliance<br>
+                ✅ Custom content policies<br>
+                ✅ API rate limiting & DDoS protection<br>
+                ✅ GDPR/COPPA compliance tools</p>
+                
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-top: 15px;">
+                    <h4>🛡️ Security Standards</h4>
+                    <p style="font-size: 0.9em;">• Real-time content filtering<br>
+                    • Multi-layer security validation<br>
+                    • Educational content compliance<br>
+                    • Automated threat detection</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/security.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
